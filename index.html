@@ -177,7 +177,7 @@
                 </div>
                 
                 <!-- GitHub同步 -->
-                <div id="githubSyncContainer" class="bg-white rounded-xl p-6 card-shadow hover-scale" style="display: none;">
+                <div id="githubSyncContainer" class="bg-white rounded-xl p-6 card-shadow hover-scale">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-xl font-bold flex items-center">
                             <i class="fa fa-github text-gray-800 mr-2"></i>GitHub同步
@@ -1098,19 +1098,20 @@
         
         // 加载隐藏状态设置
         function loadHideSyncSetting() {
-            // 无论之前的设置如何，默认总是隐藏GitHub同步
-            githubSyncContainer.style.display = 'none';
-            localStorage.setItem('githubSyncHidden', 'true');
-            
-            // 添加显示按钮到页面
-            if (!document.getElementById('showSyncBtn')) {
-                const showBtn = document.createElement('button');
-                showBtn.id = 'showSyncBtn';
-                showBtn.className = 'fixed bottom-5 left-5 p-3 bg-primary text-white rounded-full shadow-lg z-50';
-                showBtn.innerHTML = '<i class="fa fa-github"></i>';
-                showBtn.title = '显示GitHub同步';
-                document.body.appendChild(showBtn);
-                showBtn.addEventListener('click', showGitHubSync);
+            // 默认隐藏GitHub同步，除非明确设置为不隐藏
+            const isHidden = localStorage.getItem('githubSyncHidden') !== 'false';
+            if (isHidden) {
+                githubSyncContainer.style.display = 'none';
+                // 添加显示按钮到页面
+                if (!document.getElementById('showSyncBtn')) {
+                    const showBtn = document.createElement('button');
+                    showBtn.id = 'showSyncBtn';
+                    showBtn.className = 'fixed bottom-5 left-5 p-3 bg-primary text-white rounded-full shadow-lg z-50';
+                    showBtn.innerHTML = '<i class="fa fa-github"></i>';
+                    showBtn.title = '显示GitHub同步';
+                    document.body.appendChild(showBtn);
+                    showBtn.addEventListener('click', showGitHubSync);
+                }
             }
         }
         
