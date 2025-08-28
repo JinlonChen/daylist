@@ -185,10 +185,15 @@
                 </div>
                 
                 <!-- GitHub同步 -->
-                <div class="bg-white rounded-xl p-6 card-shadow hover-scale">
-                    <h2 class="text-xl font-bold mb-4 flex items-center">
-                        <i class="fa fa-github text-primary mr-2"></i>GitHub同步
-                    </h2>
+                <div class="bg-white rounded-xl p-6 card-shadow hover-scale" id="githubSyncContainer">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold flex items-center">
+                            <i class="fa fa-github text-primary mr-2"></i>GitHub同步
+                        </h2>
+                        <button id="hideSyncBtn" class="text-gray-500 hover:text-gray-700 text-sm">
+                            <i class="fa fa-eye-slash"></i> 隐藏
+                        </button>
+                    </div>
                     <div class="space-y-4">
                         <div>
                             <label for="githubToken" class="block text-sm font-medium text-secondary mb-1">GitHub Token:</label>
@@ -373,6 +378,8 @@
         const syncFromGithubBtn = document.getElementById('syncFromGithubBtn');
         const autoSyncBtn = document.getElementById('autoSyncBtn');
         const syncStatus = document.getElementById('syncStatus');
+        const githubSyncContainer = document.getElementById('githubSyncContainer');
+        const hideSyncBtn = document.getElementById('hideSyncBtn');
         
         // 初始化
         let currentDate = new Date();
@@ -941,6 +948,55 @@
             }
         }
         
+        // 加载隐藏状态设置
+        function loadHideSyncSetting() {
+            const isHidden = localStorage.getItem('githubSyncHidden') === 'true';
+            if (isHidden) {
+                githubSyncContainer.style.display = 'none';
+                // 添加显示按钮到页面
+                if (!document.getElementById('showSyncBtn')) {
+                    const showBtn = document.createElement('button');
+                    showBtn.id = 'showSyncBtn';
+                    showBtn.className = 'fixed bottom-5 left-5 p-3 bg-primary text-white rounded-full shadow-lg z-50';
+                    showBtn.innerHTML = '<i class="fa fa-github"></i>';
+                    showBtn.title = '显示GitHub同步';
+                    document.body.appendChild(showBtn);
+                    showBtn.addEventListener('click', showGitHubSync);
+                }
+            }
+        }
+        
+        // 隐藏GitHub同步模块
+        function hideGitHubSync() {
+            githubSyncContainer.style.display = 'none';
+            localStorage.setItem('githubSyncHidden', 'true');
+            
+            // 创建显示按钮
+            const showBtn = document.createElement('button');
+            showBtn.id = 'showSyncBtn';
+            showBtn.className = 'fixed bottom-5 left-5 p-3 bg-primary text-white rounded-full shadow-lg z-50';
+            showBtn.innerHTML = '<i class="fa fa-github"></i>';
+            showBtn.title = '显示GitHub同步';
+            document.body.appendChild(showBtn);
+            showBtn.addEventListener('click', showGitHubSync);
+            
+            showNotification('GitHub同步已隐藏', 'success');
+        }
+        
+        // 显示GitHub同步模块
+        function showGitHubSync() {
+            githubSyncContainer.style.display = 'block';
+            localStorage.setItem('githubSyncHidden', 'false');
+            
+            // 移除显示按钮
+            const showBtn = document.getElementById('showSyncBtn');
+            if (showBtn) {
+                document.body.removeChild(showBtn);
+            }
+            
+            showNotification('GitHub同步已显示', 'success');
+        }
+        
         // 事件监听器
         datePicker.addEventListener('change', function() {
             currentDate = new Date(this.value);
@@ -1003,8 +1059,18 @@
         // 初始化
         setTodayDate();
         loadSyncSettings();
-        if (autoSync) {
+        loadHideSyncSetting();
+        // 如果启用了自动同步，启动定时器
+        if (localStorage.getItem('autoSyncEnabled') === 'true') {
+            autoSyncBtn.textContent = '自动开';
+            autoSyncBtn.classList.remove('bg-secondary');
+            autoSyncBtn.classList.add('bg-success');
             startAutoSync();
+        }
+        
+        // 隐藏GitHub同步面板
+        if (hideSyncBtn) {
+            hideSyncBtn.addEventListener('click', hideGitHubSync);
         }
     </script>
 </body>
