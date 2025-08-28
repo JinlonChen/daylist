@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日程安排应用</title>
+    <title>日程安排</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -73,7 +73,7 @@
 <body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <header class="mb-8 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">日程安排应用</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">日程安排</h1>
             <p class="text-secondary">高效管理您的日常计划和任务</p>
         </header>
         
@@ -101,11 +101,11 @@
                             <span id="currentMonthDisplay"></span> 当月目标
                         </h2>
                         <button id="toggleGoalsBtn" class="text-gray-500 hover:text-primary transition-colors">
-                            <i class="fa fa-chevron-up" id="toggleGoalsIcon"></i>
+                            <i class="fa fa-chevron-down" id="toggleGoalsIcon"></i>
                         </button>
                     </div>
                     
-                    <div id="monthlyGoalsList" class="space-y-2">
+                    <div id="monthlyGoalsList" class="space-y-2" style="display: none">
                         <!-- 直接显示5行空白文本输入框 -->
                         <div class="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
                             <span class="inline-flex items-center justify-center w-6 h-6 bg-primary/10 text-primary rounded-full text-xs mr-2">1</span>
@@ -1098,7 +1098,8 @@
         
         // 加载隐藏状态设置
         function loadHideSyncSetting() {
-            const isHidden = localStorage.getItem('githubSyncHidden') === 'true';
+            // 默认隐藏GitHub同步，除非明确设置为不隐藏
+            const isHidden = localStorage.getItem('githubSyncHidden') !== 'false';
             if (isHidden) {
                 githubSyncContainer.style.display = 'none';
                 // 添加显示按钮到页面
